@@ -23,11 +23,11 @@ host = ''
 device_id = 455
 client = mqtt.Client (protocol = mqtt.MQTTv311)
 
-def bn():
+def	bn():
 	""" defines the base name for the queues """
 	return str(device_id) + '/' + username 
 
-def	 on_connect (client, userdata, flags, response_code):
+def	on_connect (client, userdata, flags, response_code):
 	""" subscribe to relevant queues - could be extended """
 	print ( 'Status:' + str(response_code))	
 	topics = [
@@ -36,14 +36,14 @@ def	 on_connect (client, userdata, flags, response_code):
 	for topic in topics:
 		client.subscribe(topic)
 
-def	 on_message (client, userdata, msg):
+def	on_message (client, userdata, msg):
 	""" handle message received in subscribed queue """
 	print ( '-----' + msg.topic + '-----' )
 	payload = msg.payload.decode('UTF-8')
 	print (payload)
 	save_data(msg.topic, payload)
 
-def clean(filename):
+def	clean(filename):
 	""" clean filenames """
 	#2016-10-31T17:00:37.412Z
 	return re.sub(':', '', filename)
@@ -58,7 +58,7 @@ def	save_data(topic, payload):
 	with open (os.path.join(msg_dir, msg_filename), mode="w+") as file:
 		json.dump(json_msg, file)
 	
-def get_status():
+def	get_status():
 	""" send a message requesting status update """
 	now = datetime.utcnow().isoformat()[:-3] + 'Z'
 	payload = '{"msg":"REQUEST-CURRENT-STATE","time":"' + now + '"}'
@@ -66,7 +66,7 @@ def get_status():
 	print (topic + '\n\n' + payload)
 	client.publish(topic, payload)  
 
-def set_interval(func, sec):
+def	set_interval(func, sec):
 	""" simple background threading """
 	def func_wrapper():
 		set_interval(func, sec)
@@ -76,7 +76,7 @@ def set_interval(func, sec):
 	t.start()
 	return t
 	
-def start_client(host, username, password, port, interval):
+def	start_client(host, username, password, port, interval):
 	""" start the mqtt client and issue the first status request also start the thread for further udpates """
 	#print("starting " , host, username, password, port, interval)
 	client.username_pw_set (username, password)
@@ -87,12 +87,12 @@ def start_client(host, username, password, port, interval):
 	set_interval(get_status, interval)
 	client.loop_forever()
 	
-def help():
+def	help():
 	script = os.path.basename(sys.argv[0])
 	print(script + ' -c <cfg-file>')
 	sys.exit()
 
-def main(argv):
+def	main(argv):
 	global username, password, host, device_id
 	try:
 	  opts, args = getopt.getopt(argv,"hc:",["config="])
